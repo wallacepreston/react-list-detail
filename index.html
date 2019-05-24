@@ -7,15 +7,16 @@
   <body>
     <div id='root'></div>
   <script type='text/babel'>
-    const List = ({ people, select })=> {
+    const List = ({ people })=> {
       return (
         <ul>
           {
             people.map( person => {
               return (
-                <li key={ person.id }
-                  onClick={()=> select(person.id)}>
+                <li key={ person.id }>
+                  <a href={`#${person.id}`}>
                   { person.name }
+                  </a>
                 </li>
               );
             })
@@ -26,10 +27,12 @@
 
     const Detail = ({ person, select })=> {
       return (
-        <div onClick={ ()=> select(null)}>
-          <hr />
-          { person.name }
-          <hr />
+        <div>
+          <a href='#'>
+            <hr />
+            { person.name }
+            <hr />
+          </a>
         </div>
       );
     };
@@ -40,12 +43,16 @@
           people: [],
           id: null
         };
-        this.select = this.select.bind(this);
-      }
-      select(id){
-        this.setState({ id });
       }
       componentDidMount(){
+        window.addEventListener('hashchange', ()=>{
+          const id = window.location.hash.slice(1)*1;
+          this.setState({ id });
+        });
+        if(window.location.hash.length > 1){
+          const id = window.location.hash.slice(1)*1;
+          this.setState({ id });
+        }
         const people = [
           { id: 1, name: 'moe' },
           { id: 2, name: 'larry' },
@@ -53,19 +60,23 @@
         ];
         this.setState({ people });
       }
+      doSomething(){
+        console.log('doSomething');
+      }
       render(){
         const { people, id } = this.state;
-        const { select } = this;
+        const { doSomething } = this;
         const person = people.find(person => person.id === id);
         //const people = this.state.people;
         return (
           <div>
+            <h1 onClick={ doSomething }>Click Me</h1>
             {
-              !id  ? <List people={ people } select={ select }/> : null
+              !id  ? <List people={ people } /> : null
 
             }
             {
-              person ? <Detail person={ person } select={ select }/> : null
+              person ? <Detail person={ person }/> : null
             }
           </div>
         );
