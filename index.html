@@ -1,0 +1,79 @@
+<html>
+  <head>
+    <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
+    <script src="https://unpkg.com/react@16/umd/react.development.js" crossorigin></script>
+    <script src="https://unpkg.com/react-dom@16/umd/react-dom.development.js" crossorigin></script>
+  </head>
+  <body>
+    <div id='root'></div>
+  <script type='text/babel'>
+    const List = ({ people, select })=> {
+      return (
+        <ul>
+          {
+            people.map( person => {
+              return (
+                <li key={ person.id }
+                  onClick={()=> select(person.id)}>
+                  { person.name }
+                </li>
+              );
+            })
+          }
+        </ul>
+      );
+    };
+
+    const Detail = ({ person, select })=> {
+      return (
+        <div onClick={ ()=> select(null)}>
+          <hr />
+          { person.name }
+          <hr />
+        </div>
+      );
+    };
+    class App extends React.Component{
+      constructor(){
+        super();
+        this.state = {
+          people: [],
+          id: null
+        };
+        this.select = this.select.bind(this);
+      }
+      select(id){
+        this.setState({ id });
+      }
+      componentDidMount(){
+        const people = [
+          { id: 1, name: 'moe' },
+          { id: 2, name: 'larry' },
+          { id: 3, name: 'curly' }
+        ];
+        this.setState({ people });
+      }
+      render(){
+        const { people, id } = this.state;
+        const { select } = this;
+        const person = people.find(person => person.id === id);
+        //const people = this.state.people;
+        return (
+          <div>
+            {
+              !id  ? <List people={ people } select={ select }/> : null
+
+            }
+            {
+              person ? <Detail person={ person } select={ select }/> : null
+            }
+          </div>
+        );
+      }
+    }
+    const root = document.querySelector('#root');
+    ReactDOM.render(<App />, root);
+
+  </script>
+  </body>
+</html>
