@@ -7,77 +7,56 @@
   <body>
     <div id='root'></div>
   <script type='text/babel'>
-    const List = ({ people })=> {
-      return (
-        <ul>
-          {
-            people.map( person => {
-              return (
-                <li key={ person.id }>
-                  <a href={`#${person.id}`}>
-                  { person.name }
-                  </a>
-                </li>
-              );
-            })
-          }
-        </ul>
-      );
-    };
+    
+    const MyDogComponent = (props) => {
+      console.log('props: ', props)
+      console.log('props.dogs: ', props.dogs)
+      return <div>
+        Hi! These are my dogs:
+        <div> {props.dogs && props.dogs.map(dog => (
+          <div>{dog}</div>
+        ))}</div>
+      </div>
+    }
 
-    const Detail = ({ person, select })=> {
-      return (
-        <div>
-          <a href='#'>
-            <hr />
-            { person.name }
-            <hr />
-          </a>
-        </div>
-      );
-    };
     class App extends React.Component{
       constructor(){
         super();
         this.state = {
           people: [],
-          id: null
+          dogs: ['Fluffy', 'Alfy'],
         };
       }
+
+      // async fetchPeople(){
+      //   const newPeople = await fetch...
+      //   this.setState({
+      //     people: newPeople
+      //   })
+      // }
+
       componentDidMount(){
-        window.addEventListener('hashchange', ()=>{
-          const id = window.location.hash.slice(1)*1;
-          this.setState({ id });
-        });
-        if(window.location.hash.length > 1){
-          const id = window.location.hash.slice(1)*1;
-          this.setState({ id });
-        }
+        // fetchPeople();
         const people = [
-          { id: 1, name: 'moe' },
-          { id: 2, name: 'larry' },
-          { id: 3, name: 'curly' }
-        ];
-        this.setState({ people });
+            {name: 'Preston'},
+            {name: 'Nica'}
+          ]
+        this.setState({ 
+          people,
+          dogs: [
+            'Fido'
+          ] 
+        });
       }
-      doSomething(){
-        console.log('doSomething');
-      }
+      
       render(){
-        const { people, id } = this.state;
-        const { doSomething } = this;
-        const person = people.find(person => person.id === id);
-        //const people = this.state.people;
+        
         return (
           <div>
-            <h1 onClick={ doSomething }>Click Me</h1>
-            {
-              !id  ? <List people={ people } /> : null
-
-            }
-            {
-              person ? <Detail person={ person }/> : null
-            }
+            <h1>Our People:</h1>
+            {this.state.people.map(person => person.name)}
+           
+            <MyDogComponent dogs={this.state.dogs} cats={['allie', 'pusheen']} />
           </div>
         );
       }
